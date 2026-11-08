@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Represents a user in the system.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "maxLength": 100 },
+        "photoURL": { "type": "string", "maxLength": 2048 },
+        "xp": { "type": "number" },
+        "coins": { "type": "number" },
+        "rank": { "type": "string", "maxLength": 50 },
+        "streak": { "type": "number" },
+        "lastDate": { "type": "string", "maxLength": 50 },
+        "completedLanguages": { "type": "array", "items": { "type": "string" } },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["displayName", "xp", "coins"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles for the leaderboard"
+    }
+  }
+}

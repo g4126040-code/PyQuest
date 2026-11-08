@@ -1,0 +1,9 @@
+--- src/components/SettingsScreen.tsx
++++ src/components/SettingsScreen.tsx
+@@ -1,5 +1,5 @@
+ import React from 'react';
+-import { motion } from 'motion/react';
++import { motion, AnimatePresence } from 'motion/react';
+ import { 
+   Globe, Moon, Sun, Bell, Volume2, Vibrate,
+   Clock, Info, Shield, HelpCircle, Smartphone, User

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#31104b" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)" />
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="4" />
+  
+  <!-- Outer glowing ring / shield -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#accent)" stroke-width="8" opacity="0.4" />
+  
+  <!-- Code quest brackets and lightning/slash -->
+  <g filter="url(#glow)">
+    <!-- Left Bracket < -->
+    <path d="M190 170 L110 256 L190 342" fill="none" stroke="#38bdf8" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Right Bracket > -->
+    <path d="M322 170 L402 256 L322 342" fill="none" stroke="#a855f7" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Center Slash / Sword / Code Spark / -->
+    <path d="M280 150 L232 362" fill="none" stroke="#818cf8" stroke-width="28" stroke-linecap="round" />
+    
+    <!-- Central Quest Star / Sparkle -->
+    <polygon points="256,220 266,246 292,256 266,266 256,292 246,266 220,256 246,246" fill="#fbbf24" />
+  </g>
+</svg>

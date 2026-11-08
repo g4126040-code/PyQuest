@@ -1,0 +1,6 @@
+{
+  "name": "CodeQuest Python",
+  "description": "A gamified Python coding learning application with interactive challenges, instant feedback, and progression.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

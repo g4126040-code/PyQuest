@@ -1,0 +1,76 @@
+--- src/components/SettingsScreen.tsx
++++ src/components/SettingsScreen.tsx
+@@ -7,6 +7,7 @@
+ import { useLanguage } from '../contexts/LanguageContext';
+ import { useTheme } from '../contexts/ThemeContext';
+ import { useSettings } from '../contexts/SettingsContext';
++import { challenges } from '../data/challenges';
+ 
+ export default function SettingsScreen() {
+   const { t, language, setLanguage } = useLanguage();
+@@ -14,6 +15,64 @@
+   const { mascotEnabled, setMascotEnabled, soundsEnabled, setSoundsEnabled, hapticsEnabled, setHapticsEnabled } = useSettings();
+ 
++  const [clickCount, setClickCount] = React.useState(0);
++  const [devModeVisible, setDevModeVisible] = React.useState(false);
++  const [showConfirm, setShowConfirm] = React.useState<'activate' | 'reset' | null>(null);
++
++  const handleVersionClick = () => {
++    setClickCount(c => c + 1);
++    if (clickCount >= 4) {
++      setDevModeVisible(true);
++    }
++  };
++
++  const activateTestMode = () => {
++    // Backup existing data
++    if (!localStorage.getItem('codequest_progress_backup')) {
++      localStorage.setItem('codequest_progress_backup', localStorage.getItem('codequest_progress') || '[]');
++      localStorage.setItem('codequest_streak_backup', localStorage.getItem('codequest_streak') || '{}');
++      localStorage.setItem('codequest_coins_backup', localStorage.getItem('codequest_coins') || '150');
++    }
++
++    // Unlock everything
++    const allIds = challenges.map(c => c.id);
++    localStorage.setItem('codequest_progress', JSON.stringify(allIds));
++    
++    // 1M XP is calculated automatically from completedIds length * 50
++    // Since we have ~20,000 challenges (15 tracks * 100 chapters * 10 levels = 15000), 15000 * 50 = 750,000 XP
++    // Wait, the prompt says "XP = 1,000,000". If the app calculates XP based on `completedIds.length * 50`, we might need to add dummy IDs or just let it calculate based on all challenges. If all challenges are completed, that's what it is. If we need exactly 1,000,000, we could add 20,000 extra dummy IDs. Let's add dummy IDs until we hit 1,000,000 XP (which is 20,000 completed IDs).
++    
++    const requiredIdsFor1M = 20000;
++    if (allIds.length < requiredIdsFor1M) {
++      const deficit = requiredIdsFor1M - allIds.length;
++      for (let i = 0; i < deficit; i++) {
++        allIds.push(`dummy_test_id_${i}`);
++      }
++    }
++    localStorage.setItem('codequest_progress', JSON.stringify(allIds));
++
++    localStorage.setItem('codequest_streak', JSON.stringify({
++      current: 1000,
++      longest: 1000,
++      lastDate: new Date().toISOString(),
++      claimed: []
++    }));
++
++    localStorage.setItem('codequest_coins', '999999');
++
++    window.location.reload();
++  };
++
++  const resetTestMode = () => {
++    const backupProgress = localStorage.getItem('codequest_progress_backup');
++    if (backupProgress) {
++      localStorage.setItem('codequest_progress', backupProgress);
++      localStorage.setItem('codequest_streak', localStorage.getItem('codequest_streak_backup') || '{}');
++      localStorage.setItem('codequest_coins', localStorage.getItem('codequest_coins_backup') || '150');
++      
++      localStorage.removeItem('codequest_progress_backup');
++      localStorage.removeItem('codequest_streak_backup');
++      localStorage.removeItem('codequest_coins_backup');
++    }
++    window.location.reload();
++  };
++
+   const settingsGroups = [

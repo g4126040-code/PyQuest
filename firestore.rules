@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() { return request.auth != null; }
+    function existing() { return resource.data; }
+    function incoming() { return request.resource.data; }
+    function isOwner(userId) { return request.auth.uid == userId; }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['displayName', 'xp', 'coins'])
+        && data.displayName is string && data.displayName.size() <= 100
+        && ( !('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 1048576) )
+        && data.xp is number && data.xp >= 0
+        && data.coins is number && data.coins >= 0
+        && ( !('rank' in data) || (data.rank is string && data.rank.size() <= 50) )
+        && ( !('streak' in data) || (data.streak is number && data.streak >= 0) )
+        && ( !('lastDate' in data) || (data.lastDate is string && data.lastDate.size() <= 50) )
+        && ( !('completedLanguages' in data) || (data.completedLanguages is list && data.completedLanguages.size() <= 100) )
+        && ( !('updatedAt' in data) || (data.updatedAt is number) );
+    }
+
+    match /users/{userId} {
+      allow read: if true; // Everyone can read for the leaderboard
+      
+      allow create: if isSignedIn() 
+        && isOwner(userId)
+        && isValidUser(incoming());
+        
+      allow update: if isSignedIn()
+        && isOwner(userId)
+        && isValidUser(incoming())
+        && incoming().xp >= existing().xp // XP can only increase
+        && incoming().coins >= existing().coins // Coins can only increase
+        && (incoming().xp <= existing().xp + 50000); // Prevent massive fake XP injections
+    }
+  }
+}

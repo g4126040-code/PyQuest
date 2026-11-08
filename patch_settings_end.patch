@@ -1,0 +1,106 @@
+--- src/components/SettingsScreen.tsx
++++ src/components/SettingsScreen.tsx
+@@ -74,7 +74,7 @@
+         { id: 'version', icon: Smartphone, label: 'App Version', type: 'text', value: '1.0.0' }
+       ]
+     }
+   ];
+ 
+   return (
+     <div className="w-full max-w-2xl mx-auto py-8 px-4 flex flex-col gap-8 pb-32">
+       <motion.div
+@@ -141,7 +141,7 @@
+                   {item.type === 'text' && (
+-                    <div className="text-content-muted text-sm font-bold">
++                    <div className="text-content-muted text-sm font-bold" onClick={item.id === 'version' ? handleVersionClick : undefined}>
+                       {item.value as string}
+                     </div>
+                   )}
+                 </div>
+               ))}
+             </div>
+           </motion.div>
+         ))}
++        
++        {/* Developer Test Mode Hidden Section */}
++        <AnimatePresence>
++          {devModeVisible && (
++            <motion.div 
++              initial={{ opacity: 0, height: 0 }}
++              animate={{ opacity: 1, height: 'auto' }}
++              className="flex flex-col gap-3 mt-4"
++            >
++              <h2 className="text-sm font-bold text-rose-500 uppercase tracking-wider px-2 flex items-center gap-2">
++                <Shield className="w-4 h-4" />
++                Developer Test Mode
++              </h2>
++              <div className="premium-glass-panel flex flex-col overflow-hidden border-rose-500/30 bg-rose-500/5">
++                <div className="p-4 flex flex-col gap-4">
++                  <p className="text-sm font-bold text-rose-400">
++                    Warning: Test Mode will override local progress.
++                  </p>
++                  
++                  {showConfirm === 'activate' ? (
++                    <div className="flex flex-col gap-3 bg-black/20 p-4 rounded-xl border border-rose-500/30">
++                      <p className="font-bold text-white">Activate Developer Test Mode?</p>
++                      <div className="flex gap-2">
++                        <button 
++                          onClick={() => setShowConfirm(null)}
++                          className="flex-1 py-2 rounded-lg bg-surface font-bold text-content-primary hover:bg-surface-elevated transition-colors"
++                        >
++                          Cancel
++                        </button>
++                        <button 
++                          onClick={activateTestMode}
++                          className="flex-1 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-black transition-colors"
++                        >
++                          Activate
++                        </button>
++                      </div>
++                    </div>
++                  ) : (
++                    <button 
++                      onClick={() => setShowConfirm('activate')}
++                      className="w-full py-3 rounded-xl font-black text-rose-500 bg-rose-500/10 hover:bg-rose-500/20 transition-colors border border-rose-500/30"
++                    >
++                      Activate Test Mode
++                    </button>
++                  )}
++
++                  {localStorage.getItem('codequest_progress_backup') && (
++                    showConfirm === 'reset' ? (
++                      <div className="flex flex-col gap-3 bg-black/20 p-4 rounded-xl border border-amber-500/30 mt-2">
++                        <p className="font-bold text-white">Reset Test Progress?</p>
++                        <div className="flex gap-2">
++                          <button 
++                            onClick={() => setShowConfirm(null)}
++                            className="flex-1 py-2 rounded-lg bg-surface font-bold text-content-primary hover:bg-surface-elevated transition-colors"
++                          >
++                            Cancel
++                          </button>
++                          <button 
++                            onClick={resetTestMode}
++                            className="flex-1 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-black transition-colors"
++                          >
++                            Reset
++                          </button>
++                        </div>
++                      </div>
++                    ) : (
++                      <button 
++                        onClick={() => setShowConfirm('reset')}
++                        className="w-full py-3 rounded-xl font-bold text-amber-500 bg-amber-500/10 hover:bg-amber-500/20 transition-colors mt-2"
++                      >
++                        Reset Test Progress
++                      </button>
++                    )
++                  )}
++                </div>
++              </div>
++            </motion.div>
++          )}
++        </AnimatePresence>
+       </div>
+     </div>
+   );
+ }
